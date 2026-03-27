@@ -6,17 +6,16 @@
 <title>Good Grace Media</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --chrome-1: #c0c0c0;
-    --chrome-2: #e8e8e8;
-    --chrome-3: #909090;
-    --chrome-dark: #3a3a3a;
-    --bg-deep: #0a0a0c;
-    --bg-panel: #111114;
-    --accent-cool: #7ab8ff;
-    --accent-warm: #ff7a7a;
+    --bg-deep: #06060a;
+    --bg-panel: #0d0d14;
+    --accent-blue: #4d6bfe;
+    --accent-glow: #7b8fff;
+    --accent-purple: #9b6bfe;
+    --text-bright: #f0efff;
+    --text-dim: #7070a0;
     --tab-height: 72px;
     --tab-peek: 18px;
     --panel-height: 75vh;
@@ -34,8 +33,8 @@
     height: 100%;
     overflow: hidden;
     background: var(--bg-deep);
-    color: var(--chrome-2);
-    font-family: 'Space Mono', monospace;
+    color: var(--text-bright);
+    font-family: 'DM Sans', sans-serif;
   }
 
   /* ── HERO / LOGO AREA ── */
@@ -51,25 +50,26 @@
     overflow: hidden;
   }
 
+  /* Deep atmospheric glow — matches logo's blue/purple energy */
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(122,184,255,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 30% 70%, rgba(255,122,122,0.04) 0%, transparent 60%);
+      radial-gradient(ellipse 70% 55% at 50% 45%, rgba(77,107,254,0.13) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 25% 80%, rgba(155,107,254,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 80% 20%, rgba(77,107,254,0.06) 0%, transparent 50%);
     pointer-events: none;
   }
 
-  /* Subtle grid overlay */
+  /* Film grain texture */
   .hero::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.4;
     pointer-events: none;
   }
 
@@ -77,66 +77,80 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    animation: logoFadeIn 1.6s ease-out both;
+    animation: logoFadeIn 1.8s ease-out both;
   }
 
   @keyframes logoFadeIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    from { opacity: 0; transform: translateY(28px) scale(0.94); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  .logo-placeholder {
-    width: 420px;
-    max-width: 80vw;
-    aspect-ratio: 16/9;
-    border: 1px solid rgba(192,192,192,0.15);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-      linear-gradient(135deg, rgba(192,192,192,0.03) 0%, rgba(192,192,192,0.08) 50%, rgba(192,192,192,0.03) 100%);
-    position: relative;
-    overflow: hidden;
+  .logo-img {
+    width: 520px;
+    max-width: 85vw;
+    display: block;
+    /* Lift the logo off the page with a matching blue glow */
+    filter: drop-shadow(0 0 40px rgba(77,107,254,0.35)) drop-shadow(0 0 80px rgba(77,107,254,0.15));
+    transition: filter 0.5s ease;
   }
 
-  .logo-placeholder img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-
-  .logo-placeholder-text {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    font-size: clamp(1.4rem, 4vw, 2.6rem);
-    letter-spacing: 0.15em;
-    background: linear-gradient(
-      180deg,
-      var(--chrome-2) 0%,
-      var(--chrome-1) 40%,
-      var(--chrome-3) 60%,
-      var(--chrome-2) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+  .logo-img:hover {
+    filter: drop-shadow(0 0 60px rgba(120,150,255,0.5)) drop-shadow(0 0 120px rgba(77,107,254,0.25));
   }
 
   .logo-subtext {
-    margin-top: 16px;
+    margin-top: 20px;
+    font-family: 'DM Sans', sans-serif;
     font-size: 0.7rem;
-    letter-spacing: 0.5em;
+    font-weight: 300;
+    letter-spacing: 0.55em;
     text-transform: uppercase;
-    color: var(--chrome-3);
+    color: var(--text-dim);
     opacity: 0;
-    animation: subFadeIn 1s ease-out 0.8s both;
+    animation: subFadeIn 1s ease-out 1s both;
   }
 
   @keyframes subFadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 0.8; transform: translateY(0); }
+  }
+
+  /* Floating sparkles */
+  .sparkle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    animation: sparklePop var(--dur, 3s) ease-in-out var(--delay, 0s) infinite;
+  }
+
+  .sparkle::before, .sparkle::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 1px;
+  }
+
+  .sparkle::before {
+    width: 2px;
+    height: var(--size, 16px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .sparkle::after {
+    width: var(--size, 16px);
+    height: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes sparklePop {
+    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    30%, 70% { opacity: 0.7; transform: scale(1) rotate(45deg); }
+    50% { opacity: 1; transform: scale(1.15) rotate(45deg); }
   }
 
   /* ── TAB BAR ── */
@@ -170,90 +184,81 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: transform 0.35s var(--transition-peek);
+    transition: transform 0.35s var(--transition-peek), background 0.3s ease;
     will-change: transform;
-    border-top: 1px solid rgba(192,192,192,0.12);
-    border-left: 1px solid rgba(192,192,192,0.06);
-    border-right: 1px solid rgba(192,192,192,0.06);
-    border-radius: 6px 6px 0 0;
-  }
-
-  .tab:nth-child(1) .tab-face {
-    background: linear-gradient(180deg, #1a1a22 0%, #12121a 100%);
-  }
-  .tab:nth-child(2) .tab-face {
-    background: linear-gradient(180deg, #1a1d22 0%, #12151a 100%);
-  }
-  .tab:nth-child(3) .tab-face {
-    background: linear-gradient(180deg, #1d1a22 0%, #15121a 100%);
-  }
-  .tab:nth-child(4) .tab-face {
-    background: linear-gradient(180deg, #221a1d 0%, #1a1215 100%);
+    background: rgba(10, 10, 18, 0.92);
+    border-top: 1px solid rgba(77,107,254,0.1);
+    border-left: 1px solid rgba(77,107,254,0.06);
+    border-right: 1px solid rgba(77,107,254,0.06);
+    border-radius: 8px 8px 0 0;
+    backdrop-filter: blur(12px);
   }
 
   .tab-label {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 700;
-    font-size: 0.75rem;
-    letter-spacing: 0.25em;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--chrome-3);
+    color: var(--text-dim);
     transition: color 0.3s ease;
   }
 
   .tab-icon {
-    width: 18px;
-    height: 18px;
-    opacity: 0.4;
+    width: 16px;
+    height: 16px;
+    opacity: 0.3;
     transition: opacity 0.3s ease;
+    color: var(--accent-glow);
   }
 
   /* Hover peek */
   .tab:hover .tab-face {
     transform: translateY(calc(-1 * var(--tab-peek)));
+    background: rgba(15, 15, 28, 0.96);
   }
 
   .tab:hover .tab-label {
-    color: var(--chrome-2);
+    color: var(--text-bright);
   }
 
   .tab:hover .tab-icon {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 
-  /* Active state override — no peek, tab stays put */
+  /* Active state */
   .tab.active .tab-face {
     transform: translateY(0) !important;
-    border-top-color: var(--accent-cool);
+    border-top-color: var(--accent-blue);
+    background: rgba(12, 12, 24, 0.98);
   }
 
   .tab.active .tab-label {
-    color: var(--accent-cool);
+    color: var(--accent-glow);
   }
 
   .tab.active .tab-icon {
     opacity: 1;
-    filter: brightness(1.5);
   }
 
-  /* Thin accent line on top of active tab */
+  /* Glowing accent line on top of active tab */
   .tab.active .tab-face::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
+    top: -1px;
+    left: 15%;
+    right: 15%;
     height: 2px;
-    background: var(--accent-cool);
-    border-radius: 0 0 2px 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-purple), var(--accent-blue), transparent);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 0 12px var(--accent-blue);
   }
 
   /* ── CONTENT PANELS ── */
   .panel-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(4, 4, 10, 0.7);
+    backdrop-filter: blur(6px);
     z-index: 50;
     opacity: 0;
     pointer-events: none;
@@ -276,7 +281,11 @@
     transition: transform 0.6s var(--transition-open);
     will-change: transform;
     overflow: hidden;
-    border-radius: 12px 12px 0 0;
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid rgba(77,107,254,0.15);
+    border-left: 1px solid rgba(77,107,254,0.08);
+    border-right: 1px solid rgba(77,107,254,0.08);
+    background: linear-gradient(180deg, #0e0e1a 0%, #08080f 100%);
   }
 
   .panel.open {
@@ -288,28 +297,15 @@
     overflow-y: auto;
     padding: 48px 40px 40px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(192,192,192,0.2) transparent;
+    scrollbar-color: rgba(77,107,254,0.25) transparent;
   }
 
   .panel-inner::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
   .panel-inner::-webkit-scrollbar-thumb {
-    background: rgba(192,192,192,0.2);
-    border-radius: 3px;
-  }
-
-  .panel:nth-child(1) {
-    background: linear-gradient(180deg, #14141c 0%, #0c0c12 100%);
-  }
-  .panel:nth-child(2) {
-    background: linear-gradient(180deg, #141820 0%, #0c1018 100%);
-  }
-  .panel:nth-child(3) {
-    background: linear-gradient(180deg, #18141c 0%, #100c14 100%);
-  }
-  .panel:nth-child(4) {
-    background: linear-gradient(180deg, #1c1418 0%, #140c10 100%);
+    background: rgba(77,107,254,0.25);
+    border-radius: 2px;
   }
 
   /* Close button */
@@ -322,10 +318,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(192,192,192,0.15);
+    border: 1px solid rgba(77,107,254,0.2);
     border-radius: 50%;
-    background: rgba(0,0,0,0.3);
-    color: var(--chrome-3);
+    background: rgba(0,0,0,0.4);
+    color: var(--text-dim);
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.2s ease;
@@ -333,25 +329,29 @@
   }
 
   .panel-close:hover {
-    border-color: var(--chrome-1);
-    color: var(--chrome-2);
-    background: rgba(0,0,0,0.5);
+    border-color: var(--accent-blue);
+    color: var(--text-bright);
+    background: rgba(77,107,254,0.1);
+    box-shadow: 0 0 12px rgba(77,107,254,0.2);
   }
 
   .panel-title {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-    letter-spacing: 0.15em;
-    margin-bottom: 8px;
-    color: var(--chrome-2);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--text-bright) 0%, var(--accent-glow) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .panel-subtitle {
-    font-size: 0.7rem;
-    letter-spacing: 0.3em;
+    font-size: 0.68rem;
+    font-weight: 300;
+    letter-spacing: 0.4em;
     text-transform: uppercase;
-    color: var(--chrome-3);
+    color: var(--text-dim);
     margin-bottom: 36px;
   }
 
@@ -359,24 +359,24 @@
   .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    gap: 14px;
   }
 
   .gallery-item {
     aspect-ratio: 16/10;
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    border: 1px solid rgba(192,192,192,0.08);
-    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(77,107,254,0.1);
+    background: rgba(77,107,254,0.03);
     transition: all 0.3s ease;
   }
 
   .gallery-item:hover {
-    border-color: rgba(192,192,192,0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: rgba(77,107,254,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 20px rgba(77,107,254,0.08);
   }
 
   .gallery-item img,
@@ -394,16 +394,19 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: var(--chrome-3);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
   }
 
   .gallery-item .placeholder-thumb svg {
-    width: 32px;
-    height: 32px;
-    opacity: 0.3;
+    width: 28px;
+    height: 28px;
+    opacity: 0.2;
+    color: var(--accent-glow);
   }
 
   .item-label {
@@ -411,11 +414,12 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 12px 14px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    padding: 14px 16px;
+    background: linear-gradient(transparent, rgba(4,4,14,0.85));
     font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--chrome-1);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--text-bright);
     opacity: 0;
     transform: translateY(4px);
     transition: all 0.25s ease;
@@ -433,13 +437,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 48px;
-    height: 48px;
-    background: rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.3);
+    width: 46px;
+    height: 46px;
+    background: rgba(77,107,254,0.2);
+    border: 1.5px solid rgba(120,150,255,0.4);
     border-radius: 50%;
     pointer-events: none;
     transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
   }
 
   .gallery-item.video-item::before {
@@ -447,12 +452,17 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-45%, -50%);
+    transform: translate(-42%, -50%);
     z-index: 1;
-    border-left: 14px solid rgba(255,255,255,0.7);
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid transparent;
+    border-left: 13px solid rgba(200,210,255,0.8);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
     pointer-events: none;
+  }
+
+  .gallery-item.video-item:hover::after {
+    background: rgba(77,107,254,0.35);
+    box-shadow: 0 0 20px rgba(77,107,254,0.3);
   }
 
   /* ── RESPONSIVE ── */
@@ -463,8 +473,8 @@
     }
 
     .tab-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
     }
 
     .tab-icon {
@@ -479,16 +489,20 @@
     .panel-inner {
       padding: 44px 20px 20px;
     }
+
+    .logo-img {
+      width: 90vw;
+    }
   }
 
   /* ── STAGGER ANIMATION FOR GALLERY ITEMS ── */
   .panel.open .gallery-item {
-    animation: itemReveal 0.4s ease-out both;
+    animation: itemReveal 0.45s ease-out both;
   }
 
   @keyframes itemReveal {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 </style>
 </head>
@@ -496,11 +510,20 @@
 
 <!-- HERO -->
 <section class="hero">
+  <!-- Floating sparkles — positioned around the logo -->
+  <div class="sparkle" style="top:28%;left:18%;--size:14px;--dur:2.8s;--delay:0s;"></div>
+  <div class="sparkle" style="top:22%;left:74%;--size:10px;--dur:3.4s;--delay:0.7s;"></div>
+  <div class="sparkle" style="top:65%;left:12%;--size:8px;--dur:4s;--delay:1.2s;"></div>
+  <div class="sparkle" style="top:70%;left:82%;--size:12px;--dur:3.1s;--delay:0.3s;"></div>
+  <div class="sparkle" style="top:40%;left:88%;--size:8px;--dur:2.5s;--delay:1.8s;"></div>
+  <div class="sparkle" style="top:15%;left:48%;--size:6px;--dur:3.7s;--delay:0.5s;"></div>
+
   <div class="logo-container">
-    <!-- Replace the .logo-placeholder div with your logo <img> -->
-    <div class="logo-placeholder">
-      <span class="logo-placeholder-text">GOOD GRACE<br>MEDIA</span>
-    </div>
+    <img
+      src="assets/good grace logo.png"
+      alt="Good Grace Media"
+      class="logo-img"
+    />
     <p class="logo-subtext">Production &nbsp;·&nbsp; Design &nbsp;·&nbsp; Sound</p>
   </div>
 </section>
