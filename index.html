@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good Grace Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --chrome-1: #c0c0c0;
+    --chrome-2: #e8e8e8;
+    --chrome-3: #909090;
+    --chrome-dark: #3a3a3a;
+    --bg-deep: #0a0a0c;
+    --bg-panel: #111114;
+    --accent-cool: #7ab8ff;
+    --accent-warm: #ff7a7a;
+    --tab-height: 72px;
+    --tab-peek: 18px;
+    --panel-height: 75vh;
+    --transition-peek: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-open: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-deep);
+    color: var(--chrome-2);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── HERO / LOGO AREA ── */
+  .hero {
+    position: absolute;
+    inset: 0;
+    bottom: var(--tab-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(122,184,255,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 30% 70%, rgba(255,122,122,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Subtle grid overlay */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .logo-container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    animation: logoFadeIn 1.6s ease-out both;
+  }
+
+  @keyframes logoFadeIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .logo-placeholder {
+    width: 420px;
+    max-width: 80vw;
+    aspect-ratio: 16/9;
+    border: 1px solid rgba(192,192,192,0.15);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(135deg, rgba(192,192,192,0.03) 0%, rgba(192,192,192,0.08) 50%, rgba(192,192,192,0.03) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .logo-placeholder-text {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.4rem, 4vw, 2.6rem);
+    letter-spacing: 0.15em;
+    background: linear-gradient(
+      180deg,
+      var(--chrome-2) 0%,
+      var(--chrome-1) 40%,
+      var(--chrome-3) 60%,
+      var(--chrome-2) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+  }
+
+  .logo-subtext {
+    margin-top: 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--chrome-3);
+    opacity: 0;
+    animation: subFadeIn 1s ease-out 0.8s both;
+  }
+
+  @keyframes subFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── TAB BAR ── */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--tab-height);
+    display: flex;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .tab {
+    flex: 1;
+    position: relative;
+    pointer-events: all;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab-face {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--tab-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.35s var(--transition-peek);
+    will-change: transform;
+    border-top: 1px solid rgba(192,192,192,0.12);
+    border-left: 1px solid rgba(192,192,192,0.06);
+    border-right: 1px solid rgba(192,192,192,0.06);
+    border-radius: 6px 6px 0 0;
+  }
+
+  .tab:nth-child(1) .tab-face {
+    background: linear-gradient(180deg, #1a1a22 0%, #12121a 100%);
+  }
+  .tab:nth-child(2) .tab-face {
+    background: linear-gradient(180deg, #1a1d22 0%, #12151a 100%);
+  }
+  .tab:nth-child(3) .tab-face {
+    background: linear-gradient(180deg, #1d1a22 0%, #15121a 100%);
+  }
+  .tab:nth-child(4) .tab-face {
+    background: linear-gradient(180deg, #221a1d 0%, #1a1215 100%);
+  }
+
+  .tab-label {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--chrome-3);
+    transition: color 0.3s ease;
+  }
+
+  .tab-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Hover peek */
+  .tab:hover .tab-face {
+    transform: translateY(calc(-1 * var(--tab-peek)));
+  }
+
+  .tab:hover .tab-label {
+    color: var(--chrome-2);
+  }
+
+  .tab:hover .tab-icon {
+    opacity: 0.8;
+  }
+
+  /* Active state override — no peek, tab stays put */
+  .tab.active .tab-face {
+    transform: translateY(0) !important;
+    border-top-color: var(--accent-cool);
+  }
+
+  .tab.active .tab-label {
+    color: var(--accent-cool);
+  }
+
+  .tab.active .tab-icon {
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+
+  /* Thin accent line on top of active tab */
+  .tab.active .tab-face::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--accent-cool);
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* ── CONTENT PANELS ── */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .panel-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .panel {
+    position: fixed;
+    bottom: var(--tab-height);
+    left: 0;
+    right: 0;
+    height: var(--panel-height);
+    z-index: 60;
+    transform: translateY(100%);
+    transition: transform 0.6s var(--transition-open);
+    will-change: transform;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .panel.open {
+    transform: translateY(0);
+  }
+
+  .panel-inner {
+    height: 100%;
+    overflow-y: auto;
+    padding: 48px 40px 40px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(192,192,192,0.2) transparent;
+  }
+
+  .panel-inner::-webkit-scrollbar {
+    width: 6px;
+  }
+  .panel-inner::-webkit-scrollbar-thumb {
+    background: rgba(192,192,192,0.2);
+    border-radius: 3px;
+  }
+
+  .panel:nth-child(1) {
+    background: linear-gradient(180deg, #14141c 0%, #0c0c12 100%);
+  }
+  .panel:nth-child(2) {
+    background: linear-gradient(180deg, #141820 0%, #0c1018 100%);
+  }
+  .panel:nth-child(3) {
+    background: linear-gradient(180deg, #18141c 0%, #100c14 100%);
+  }
+  .panel:nth-child(4) {
+    background: linear-gradient(180deg, #1c1418 0%, #140c10 100%);
+  }
+
+  /* Close button */
+  .panel-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(192,192,192,0.15);
+    border-radius: 50%;
+    background: rgba(0,0,0,0.3);
+    color: var(--chrome-3);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    z-index: 5;
+  }
+
+  .panel-close:hover {
+    border-color: var(--chrome-1);
+    color: var(--chrome-2);
+    background: rgba(0,0,0,0.5);
+  }
+
+  .panel-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    color: var(--chrome-2);
+  }
+
+  .panel-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--chrome-3);
+    margin-bottom: 36px;
+  }
+
+  /* ── GALLERY GRID ── */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .gallery-item {
+    aspect-ratio: 16/10;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid rgba(192,192,192,0.08);
+    background: rgba(255,255,255,0.02);
+    transition: all 0.3s ease;
+  }
+
+  .gallery-item:hover {
+    border-color: rgba(192,192,192,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .gallery-item img,
+  .gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery-item .placeholder-thumb {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--chrome-3);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .gallery-item .placeholder-thumb svg {
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+  }
+
+  .item-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--chrome-1);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all 0.25s ease;
+  }
+
+  .gallery-item:hover .item-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── VIDEO ITEMS ── */
+  .gallery-item.video-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: all 0.2s ease;
+  }
+
+  .gallery-item.video-item::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-45%, -50%);
+    z-index: 1;
+    border-left: 14px solid rgba(255,255,255,0.7);
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    pointer-events: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    :root {
+      --tab-height: 60px;
+      --panel-height: 80vh;
+    }
+
+    .tab-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+    }
+
+    .tab-icon {
+      display: none;
+    }
+
+    .gallery {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .panel-inner {
+      padding: 44px 20px 20px;
+    }
+  }
+
+  /* ── STAGGER ANIMATION FOR GALLERY ITEMS ── */
+  .panel.open .gallery-item {
+    animation: itemReveal 0.4s ease-out both;
+  }
+
+  @keyframes itemReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="logo-container">
+    <!-- Replace the .logo-placeholder div with your logo <img> -->
+    <div class="logo-placeholder">
+      <span class="logo-placeholder-text">GOOD GRACE<br>MEDIA</span>
+    </div>
+    <p class="logo-subtext">Production &nbsp;·&nbsp; Design &nbsp;·&nbsp; Sound</p>
+  </div>
+</section>
+
+<!-- OVERLAY -->
+<div class="panel-overlay" id="overlay"></div>
+
+<!-- PANELS (one per tab) -->
+<div class="panel" id="panel-3d">
+  <button class="panel-close" aria-label="Close">&times;</button>
+  <div class="panel-inner">
+    <h2 class="panel-title">3D</h2>
+    <p class="panel-subtitle">Modeling &nbsp;·&nbsp; Rendering &nbsp;·&nbsp; Motion</p>
+    <div class="gallery">
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Project Name</div><span class="item-label">Project Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Project Name</div><span class="item-label">Project Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Project Name</div><span class="item-label">Project Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Project Name</div><span class="item-label">Project Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Project Name</div><span class="item-label">Project Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Project Name</div><span class="item-label">Project Title — 2025</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-stills">
+  <button class="panel-close" aria-label="Close">&times;</button>
+  <div class="panel-inner">
+    <h2 class="panel-title">Stills</h2>
+    <p class="panel-subtitle">Photography &nbsp;·&nbsp; Compositing &nbsp;·&nbsp; Retouching</p>
+    <div class="gallery">
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo</div><span class="item-label">Photo Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo</div><span class="item-label">Photo Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo</div><span class="item-label">Photo Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo</div><span class="item-label">Photo Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo</div><span class="item-label">Photo Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo</div><span class="item-label">Photo Title — 2025</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-video">
+  <button class="panel-close" aria-label="Close">&times;</button>
+  <div class="panel-inner">
+    <h2 class="panel-title">Video</h2>
+    <p class="panel-subtitle">Editing &nbsp;·&nbsp; Color &nbsp;·&nbsp; Post-Production</p>
+    <div class="gallery">
+      <div class="gallery-item video-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div><span class="item-label">Video Title — 2025</span></div>
+      <div class="gallery-item video-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div><span class="item-label">Video Title — 2025</span></div>
+      <div class="gallery-item video-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div><span class="item-label">Video Title — 2025</span></div>
+      <div class="gallery-item video-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div><span class="item-label">Video Title — 2025</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-graphic">
+  <button class="panel-close" aria-label="Close">&times;</button>
+  <div class="panel-inner">
+    <h2 class="panel-title">Graphic</h2>
+    <p class="panel-subtitle">Identity &nbsp;·&nbsp; Print &nbsp;·&nbsp; Digital</p>
+    <div class="gallery">
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Design</div><span class="item-label">Design Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Design</div><span class="item-label">Design Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Design</div><span class="item-label">Design Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Design</div><span class="item-label">Design Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Design</div><span class="item-label">Design Title — 2025</span></div>
+      <div class="gallery-item"><div class="placeholder-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Design</div><span class="item-label">Design Title — 2025</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<nav class="tab-bar">
+  <div class="tab" data-panel="panel-3d">
+    <div class="tab-face">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span class="tab-label">3D</span>
+    </div>
+  </div>
+  <div class="tab" data-panel="panel-stills">
+    <div class="tab-face">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span class="tab-label">Stills</span>
+    </div>
+  </div>
+  <div class="tab" data-panel="panel-video">
+    <div class="tab-face">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      <span class="tab-label">Video</span>
+    </div>
+  </div>
+  <div class="tab" data-panel="panel-graphic">
+    <div class="tab-face">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="tab-label">Graphic</span>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  const overlay = document.getElementById('overlay');
+  let activePanel = null;
+
+  function openPanel(panelId) {
+    closePanel();
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    activePanel = panel;
+    panel.classList.add('open');
+    overlay.classList.add('visible');
+
+    // Find corresponding tab
+    tabs.forEach(t => {
+      t.classList.toggle('active', t.dataset.panel === panelId);
+    });
+
+    // Stagger gallery item animations
+    const items = panel.querySelectorAll('.gallery-item');
+    items.forEach((item, i) => {
+      item.style.animationDelay = `${0.08 + i * 0.06}s`;
+    });
+  }
+
+  function closePanel() {
+    if (activePanel) {
+      activePanel.classList.remove('open');
+      overlay.classList.remove('visible');
+      tabs.forEach(t => t.classList.remove('active'));
+      activePanel = null;
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const panelId = tab.dataset.panel;
+      if (activePanel && activePanel.id === panelId) {
+        closePanel();
+      } else {
+        openPanel(panelId);
+      }
+    });
+  });
+
+  overlay.addEventListener('click', closePanel);
+
+  // Close buttons
+  document.querySelectorAll('.panel-close').forEach(btn => {
+    btn.addEventListener('click', closePanel);
+  });
+
+  // Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePanel();
+  });
+</script>
+</body>
+</html>
