@@ -108,6 +108,14 @@
     display: block;
   }
 
+  /* Mobile: swap animated video for static PNG */
+  .logo-static { display: none; }
+
+  @media (max-width: 768px) {
+    .logo-video  { display: none; }
+    .logo-static { display: block; }
+  }
+
   .logo-subtext {
     margin-top: 20px;
     font-family: 'DM Sans', sans-serif;
@@ -746,12 +754,14 @@
     z-index: 0;
   }
 
-  .face-wrap:hover::before {
-    transform: scale(1.2);
-    background: radial-gradient(circle,
-      rgba(100,130,255,0.44) 0%,
-      rgba(155,107,254,0.24) 45%,
-      transparent 70%);
+  @media (hover: hover) {
+    .face-wrap:hover::before {
+      transform: scale(1.2);
+      background: radial-gradient(circle,
+        rgba(100,130,255,0.44) 0%,
+        rgba(155,107,254,0.24) 45%,
+        transparent 70%);
+    }
   }
 
   @keyframes springPop {
@@ -789,13 +799,12 @@
       drop-shadow(0 0 150px rgba(100,140,255,0.35));
   }
 
-  .face-wrap:hover .about-face-frown {
-    opacity: 0;
-  }
-
-  .face-wrap:hover .about-face-smile {
-    opacity: 1;
-    animation: springPop 0.55s cubic-bezier(0.2, 0, 0.4, 1) both;
+  @media (hover: hover) {
+    .face-wrap:hover .about-face-frown { opacity: 0; }
+    .face-wrap:hover .about-face-smile {
+      opacity: 1;
+      animation: springPop 0.55s cubic-bezier(0.2, 0, 0.4, 1) both;
+    }
   }
 
   .about-content {
@@ -902,6 +911,50 @@
     color: var(--text-bright);
   }
 
+  /* ── MOBILE ABOUT PAGE ── */
+  @media (max-width: 768px) {
+    .about-page {
+      flex-direction: column;
+    }
+
+    /* Photo stacks on top, fixed height */
+    .about-photo {
+      flex: 0 0 38vh;
+      width: 100%;
+    }
+
+    /* Fade now runs along the bottom edge instead of the right */
+    .about-photo::after {
+      top: auto;
+      left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 70px;
+      background: linear-gradient(to bottom, transparent, var(--bg-deep));
+    }
+
+    .face-wrap {
+      width: 52%;
+      max-width: 240px;
+    }
+
+    /* Content scrolls if needed */
+    .about-content {
+      flex: 1;
+      padding: 16px 24px 28px 20px;
+      justify-content: flex-start;
+      overflow-y: auto;
+    }
+
+    .about-home-btn   { font-size: 1.3rem; margin-bottom: 16px; }
+    .about-name       { font-size: 2.8rem; margin-bottom: 6px; }
+    .about-role       { font-size: 0.6rem; margin-bottom: 14px; }
+    .about-divider    { margin-bottom: 14px; }
+    .about-bio        { font-size: 0.88rem; max-width: none; }
+    .about-bio p + p  { margin-top: 8px; }
+    .about-contact-inline { font-size: 1.1rem; margin: 6px 0 2px; }
+    .about-email      { font-size: 1.15rem; }
+  }
+
 </style>
 </head>
 <body>
@@ -920,7 +973,7 @@
     <div class="logo-glow">
       <video
         id="logo-video"
-        class="logo-img"
+        class="logo-img logo-video"
         muted
         playsinline
         preload="auto"
@@ -928,6 +981,11 @@
       >
         <source src="assets/logo_movement.webm" type="video/webm">
       </video>
+      <img
+        class="logo-img logo-static"
+        src="assets/Logo_full.png"
+        alt="Good Grace Media"
+      >
     </div>
     <p class="logo-subtext">Production &nbsp;·&nbsp; Design &nbsp;·&nbsp; Sound</p>
   </div>
@@ -1304,30 +1362,32 @@
   });
 
   // ── VIDEO SCRUBBING — bevel shine follows vertical mouse position ──
+  // Desktop only — skipped on touch/mobile devices
   const logoVideo = document.getElementById('logo-video');
+  const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  let targetTime = 0;
-  let isSeeking = false;
+  if (isDesktop && logoVideo) {
+    let targetTime = 0;
+    let isSeeking = false;
 
-  function applySeek() {
-    isSeeking = true;
-    logoVideo.currentTime = targetTime;
-  }
+    function applySeek() {
+      isSeeking = true;
+      logoVideo.currentTime = targetTime;
+    }
 
-  // Chain seeks — as soon as one finishes, immediately jump to latest target
-  logoVideo.addEventListener('seeked', () => {
-    isSeeking = false;
-    applySeek();
-  });
-
-  logoVideo.addEventListener('loadedmetadata', () => {
-    document.addEventListener('mousemove', (e) => {
-      // Map vertical mouse position (top→bottom) to video timestamp
-      const progress = e.clientY / window.innerHeight;
-      targetTime = progress * (logoVideo.duration - 0.01);
-      if (!isSeeking) applySeek();
+    logoVideo.addEventListener('seeked', () => {
+      isSeeking = false;
+      applySeek();
     });
-  });
+
+    logoVideo.addEventListener('loadedmetadata', () => {
+      document.addEventListener('mousemove', (e) => {
+        const progress = e.clientY / window.innerHeight;
+        targetTime = progress * (logoVideo.duration - 0.01);
+        if (!isSeeking) applySeek();
+      });
+    });
+  }
 
   // ── ABOUT PAGE ──
   const aboutLink = document.getElementById('about-link');
@@ -1341,6 +1401,31 @@
   homeLink.addEventListener('click', () => {
     document.body.classList.remove('about-open');
   });
+
+  // ── FACE TAP (mobile) — spring to smile, return to frown ──
+  const faceWrap  = document.querySelector('.face-wrap');
+  const faceFrown = document.querySelector('.about-face-frown');
+  const faceSmile = document.querySelector('.about-face-smile');
+
+  if (faceWrap) {
+    faceWrap.addEventListener('touchend', (e) => {
+      e.preventDefault(); // stop scroll/click side-effects
+
+      // Instant swap to smile + spring animation
+      faceFrown.style.opacity = '0';
+      faceSmile.style.animation = 'none';
+      faceSmile.offsetHeight; // force reflow so animation restarts cleanly
+      faceSmile.style.opacity = '1';
+      faceSmile.style.animation = 'springPop 0.55s cubic-bezier(0.2, 0, 0.4, 1) both';
+
+      // Return to frown after the spring settles
+      setTimeout(() => {
+        faceSmile.style.opacity = '0';
+        faceSmile.style.animation = 'none';
+        faceFrown.style.opacity = '1';
+      }, 900);
+    }, { passive: false });
+  }
 
   // ── SCROLL TO NAVIGATE HERO ↔ ABOUT ──
   const aboutContent = document.querySelector('.about-content');
